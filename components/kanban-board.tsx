@@ -21,7 +21,7 @@ import type { KanbanItem, KanbanColumn, SwimLane, ColumnStats } from "../types/k
 import { KanbanCard } from "./kanban-card"
 import { generateSampleData } from "../utils/sample-data"
 
-const ITEM_HEIGHT = 120
+const ITEM_HEIGHT = 108 // Fixed height including margin
 const HEADER_HEIGHT = 60
 const SWIMLANE_HEADER_HEIGHT = 48
 
@@ -112,7 +112,6 @@ export default function KanbanBoard() {
 
   const renderColumnHeader = (column: KanbanColumn) => {
     if (column.isCollapsed) {
-      // Collapsed column header - vertical layout
       return (
         <Box
           sx={{
@@ -133,12 +132,9 @@ export default function KanbanBoard() {
           }}
           onClick={() => toggleColumnCollapse(column.id)}
         >
-          {/* Expand button at top */}
           <IconButton size="small" sx={{ mb: 1 }}>
             <UnfoldMore />
           </IconButton>
-
-          {/* Color indicator */}
           <Box
             sx={{
               width: 12,
@@ -148,8 +144,6 @@ export default function KanbanBoard() {
               mb: 2,
             }}
           />
-
-          {/* Rotated title */}
           <Typography
             variant="h6"
             sx={{
@@ -163,8 +157,6 @@ export default function KanbanBoard() {
           >
             {column.title}
           </Typography>
-
-          {/* Rotated count chip */}
           <Chip
             label={Object.values(columnStats[column.id] || {}).reduce((sum, count) => sum + count, 0)}
             size="small"
@@ -177,7 +169,6 @@ export default function KanbanBoard() {
       )
     }
 
-    // Expanded column header - horizontal layout
     return (
       <Box
         sx={{
@@ -242,7 +233,8 @@ export default function KanbanBoard() {
     </Box>
   )
 
-  const renderVirtualizedItems = ({ index, style, data }: any) => {
+  // Simplified virtualized item renderer
+  const VirtualizedItem = ({ index, style, data }: any) => {
     const item = data.items[index]
     return (
       <div style={style}>
@@ -254,7 +246,7 @@ export default function KanbanBoard() {
               {...provided.dragHandleProps}
               style={{
                 ...provided.draggableProps.style,
-                margin: "8px",
+                margin: "4px",
                 opacity: snapshot.isDragging ? 0.8 : 1,
               }}
             >
@@ -339,7 +331,7 @@ export default function KanbanBoard() {
                                   itemSize={ITEM_HEIGHT}
                                   itemData={{ items: groupedItems[swimlane.id][column.id] }}
                                 >
-                                  {renderVirtualizedItems}
+                                  {VirtualizedItem}
                                 </List>
                               ) : (
                                 <Box
